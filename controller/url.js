@@ -78,7 +78,12 @@ async function downloadAndStorageImage(imageUrl, filename) {
   }
 }
 
+async function handleTest(res, req){
+  res.send("Testing is working");
+} 
+
 module.exports = {
   handlegenerateNewShortUrl,
   handleAnalytics,
+  handleTest,
 };
