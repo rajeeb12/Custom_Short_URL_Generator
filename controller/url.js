@@ -78,7 +78,7 @@ async function downloadAndStorageImage(imageUrl, filename) {
   }
 }
 
-async function handleTest(res, req){
+async function handleTest(req, res){
   res.send("Testing is working");
 } 
 
