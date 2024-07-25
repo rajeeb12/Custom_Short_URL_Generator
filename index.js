@@ -11,12 +11,11 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
+connectMongoDB(process.env.MONGODB).then(() => {
+  console.log("connected to mongodb");
+});
 
 app.get("/", (req, res) => {
-  connectMongoDB(process.env.MONGODB).then(() => {
-    console.log("connected to mongodb");
-  });
-  
   res.send("Working fine one 4000 port");
 });
 
