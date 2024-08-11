@@ -15,9 +15,9 @@ connectMongoDB(process.env.MONGODB).then(() => {
   console.log("connected to mongodb");
 });
 
-app.get("/", (req, res) => {
-  res.send("Working fine one 4001 port snaplinker");
-});
+// app.get("/", (req, res) => {
+//   res.send("Working fine one 4001 port snaplinker");
+// });
 
 app.post("/hit", (req, res)=>{
   console.log(req.body);
@@ -45,4 +45,6 @@ app.get("/:shortId", async (req, res) => {
 
 
 
-app.listen(process.env.PORT || 4001);
+app.listen(process.env.PORT || 4001, (req, res)=>{
+  console.log("Working 4001 backend");
+});
