@@ -5,6 +5,7 @@ const Replicate = require("replicate");
 const { v4: uuidv4 } = require("uuid");
 const { put } = require("@vercel/blob");
 const axios = require("axios");
+const { response } = require("express");
 
 async function handlegenerateNewShortUrl(req, res) {
   const { url, prompt } = req.body;
@@ -20,38 +21,55 @@ async function handlegenerateNewShortUrl(req, res) {
   });
 
   //qr generator
-  const replicate = new Replicate({
-    auth: process.env.REPLICATE_API_TOKEN,
-  });
+  // const replicate = new Replicate({
+  //   auth: process.env.REPLICATE_API_TOKEN,
+  // });
 
-  const output = await replicate.run(
-    "zylim0702/qr_code_controlnet:628e604e13cf63d8ec58bd4d238474e8986b054bc5e1326e50995fdbc851c557",
-    {
-      input: {
-        eta: 0,
-        url: url,
-        prompt: prompt,
-        scheduler: "DDIM",
-        guess_mode: false,
-        num_outputs: 1,
-        guidance_scale: 9,
-        negative_prompt:
-          "Longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality",
-        image_resolution: 768,
-        num_inference_steps: 20,
-        disable_safety_check: false,
-        qr_conditioning_scale: 1.3,
-      },
-    }
-  );
-  console.log(output[0]);
+  // const output = await replicate.run(
+  //   "zylim0702/qr_code_controlnet:628e604e13cf63d8ec58bd4d238474e8986b054bc5e1326e50995fdbc851c557",
+  //   {
+  //     input: {
+  //       url: url,
+  //       prompt: prompt,
+  //       scheduler: "DDIM",
+  //       guess_mode: false,
+  //       num_outputs: 1,
+  //       guidance_scale: 9,
+  //       negative_prompt: "Longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality",
+  //       image_resolution: 768,
+  //       num_inference_steps: 20,
+  //       disable_safety_check: false,
+  //       qr_conditioning_scale: 1.3
+  //     }
+  //   }
+  // );
+  const payload = {
+    variables: {},
+    qr_code_data: url,
+    text_prompt: prompt,
+    image_prompt: null,
+  };
+  const output = await fetch("https://api.gooey.ai/v2/art-qr-code", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + process.env.GOOEY_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const result = await output.json();
+  // console.log(result.output.output_images);
+
   const id = uuidv4();
 
-  const data = await downloadAndStorageImage(output[0], `${id}.png`);
+  //const data = await downloadAndStorageImage(output[0], `${id}.png`);
+  const data = await downloadAndStorageImage(result.output.output_images, `${id}.png`);
   const blobUrl = data[0];
   const downloadUrl = data[1];
 
-  return res.status(200).json({ id: shortId, imageUrl: blobUrl , downloadUrl: downloadUrl});
+  return res
+    .status(200)
+    .json({ id: shortId, imageUrl: blobUrl, downloadUrl: downloadUrl });
 }
 
 async function handleAnalytics(req, res) {
@@ -78,9 +96,9 @@ async function downloadAndStorageImage(imageUrl, filename) {
   }
 }
 
-async function handleTest(req, res){
+async function handleTest(req, res) {
   res.send("Testing is working");
-} 
+}
 
 module.exports = {
   handlegenerateNewShortUrl,

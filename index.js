@@ -4,7 +4,7 @@ require('dotenv').config()
 const urlRoute = require("./routes/url");
 const URL = require("./models/url");
 const { connectMongoDB } = require("./connect");
-const cors = require("cors");
+var cors = require('cors');
 const bodyParser = require("body-parser");
 
 app.use(express.json());
@@ -16,8 +16,13 @@ connectMongoDB(process.env.MONGODB).then(() => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Working fine one 4000 port");
+  res.send("Working fine one 4001 port snaplinker");
 });
+
+app.post("/hit", (req, res)=>{
+  console.log(req.body);
+  console.log("Got a hit");
+})
 
 app.use("/api", urlRoute);
 
