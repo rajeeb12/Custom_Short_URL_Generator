@@ -58,7 +58,6 @@ async function handlegenerateNewShortUrl(req, res) {
   });
   const result = await output.json();
   // console.log(result.output.output_images);
-
   const id = uuidv4();
 
   //const data = await downloadAndStorageImage(output[0], `${id}.png`);
