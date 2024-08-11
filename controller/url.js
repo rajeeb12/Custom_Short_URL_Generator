@@ -5,7 +5,6 @@ const Replicate = require("replicate");
 const { v4: uuidv4 } = require("uuid");
 const { put } = require("@vercel/blob");
 const axios = require("axios");
-const { response } = require("express");
 
 async function handlegenerateNewShortUrl(req, res) {
   const { url, prompt } = req.body;
@@ -63,6 +62,7 @@ async function handlegenerateNewShortUrl(req, res) {
   const id = uuidv4();
 
   //const data = await downloadAndStorageImage(output[0], `${id}.png`);
+
   const data = await downloadAndStorageImage(result.output.output_images, `${id}.png`);
   const blobUrl = data[0];
   const downloadUrl = data[1];
