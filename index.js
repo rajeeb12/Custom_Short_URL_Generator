@@ -17,11 +17,10 @@ connectMongoDB(process.env.MONGODB).then(() => {
 
 app.get("/", (req, res) => {
   res.send("Working fine one 4001 port snaplinker");
-});
+}); 
 
 app.post("/hit", (req, res)=>{
-  console.log(req.body);
-  console.log("Got a hit");
+  res.send("Got a hit");
 })
 
 app.use("/api", urlRoute);
